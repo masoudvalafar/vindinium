@@ -1,0 +1,38 @@
+{
+  "game": {
+    "id": 1,
+    "turn": 1,
+    "maxTurns": 10,
+    "finished": false,
+    "heroes": [ 
+        {
+            "id": 1,
+            "name": "Hero #1",
+            "pos": { "x": 1, "y": 2 },
+            "life": 1,
+            "gold": 0,
+            "crashed": false
+        },
+        {
+            "id": 2,
+            "name": "Hero #2",
+            "pos": { "x": 2, "y": 3 },
+            "life": 2,
+            "gold": 1,
+            "crashed": true
+        }
+    ],
+    "board": { "size": 10, "tiles": [ "  ", "##", "[]", "$1", "$2", "@1" ] }
+  },
+  "hero": {
+    "id": 1,
+    "name": "Hero #1",
+    "pos": { "x": 1, "y": 2 },
+    "life": 1,
+    "gold": 0,
+    "crashed": false
+  },
+  "token": "string",
+  "viewUrl": "http://view/url",
+  "playUrl": "http://play/url"
+}
