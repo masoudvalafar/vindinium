@@ -16,6 +16,20 @@ mvn package
 sbt package
 ```
 
+# Run
+
+With Maven:
+
+```
+mvn exec:java -Dexec.arguments='http://server/url'
+```
+
+With SBT:
+
+```
+sbt# run http://server/url
+```
+
 # Test
 
 Tests can be written using [JUnit](http://junit.org) or [Specs2](http://etorreborre.github.io/specs2/) (even if code is vanilla Java).
