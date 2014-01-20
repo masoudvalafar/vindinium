@@ -18,22 +18,6 @@ import static java.net.URLEncoder.encode;
  * I/O utility.
  */
 public final class IO {
-    /**
-     * Passes reader from URL to given |function|.
-     * Reader is automatically closed after function.
-     *
-     * @param url GET URL
-     * @param encoding Encoding/charset (or null for JVM default)
-     * @param function Unary function with HTTP reader as argument
-     * @return Function result
-     * @throws IOException if fail to read response
-     */
-    public static <A> A fromUrl(final URL url, final String encoding,
-                                final UnaryFunction<BufferedReader,A> function) 
-        throws IOException {
-
-        return withCloseable(reader(url.openStream(), encoding), function);
-    } // end of fromUrl
 
     /**
      * POST to given HTTP |url| and apply |function| on result.
@@ -153,7 +137,14 @@ public final class IO {
                     final int c = con.getResponseCode();
                     
                     if (c != 200) {
-                        throw new IOException("Fails to get response: " + c);
+                        final String body = 
+                            withCloseable(reader(con.getInputStream(), 
+                                                 encoding), readAsString);
+
+                        throw new IOException("Fails to get response: " + 
+                                              c + " (" + 
+                                              con.getResponseMessage() +
+                                              "): " + body);
                     }
                     
                     return withCloseable(reader(con.getInputStream(), encoding), function);
@@ -163,4 +154,23 @@ public final class IO {
             }
         };
     } // end of connectionMapper
+
+    /**
+     * Read content as string
+     */
+    static UnaryFunction<BufferedReader,String> readAsString =
+        new UnaryFunction<BufferedReader,String>() {
+        public String apply(final BufferedReader r) {
+            final StringBuffer buf = new StringBuffer();
+
+            try {
+                String line;
+                while ((line = r.readLine()) != null) buf.append(line);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return buf.toString();
+        }
+    };
 } // end of class IO
