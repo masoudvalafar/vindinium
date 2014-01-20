@@ -16,12 +16,13 @@ public final class Client {
     /**
      * Launch client.
      * @param args args[0] Mode: arena or training
-     * @param args args[1] Number of games to play
-     * @param args args[2] HTTP URL of Vindinium server
+     * @param args args[1] Private key
+     * @param args args[2] Number of games to play (unused for now)
+     * @param args args[3] HTTP URL of Vindinium server
      */
     public static void main(final String[] args) {
         try {
-            withServerUrlKeyAndMode(new URL(args[0]), args[1], args[2], 20);
+            withServerUrlKeyAndMode(new URL(args[3]), args[1], args[0], 20);
         } catch (MalformedURLException e) {
             throw new RuntimeException("Invalid server URL", e);
         } // end of catch
