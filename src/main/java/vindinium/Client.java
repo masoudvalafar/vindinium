@@ -12,32 +12,36 @@ import java.net.URL;
  * Vindinium client.
  */
 public final class Client {
-    
+
     /**
      * Launch client.
-     * @param args args[0] HTTP URL of Vindinium server
+     * @param args args[0] Mode: arena or training
+     * @param args args[1] Number of games to play
+     * @param args args[2] HTTP URL of Vindinium server
      */
     public static void main(final String[] args) {
         try {
-            withServerUrl(new URL(args[0]));
+            withServerUrlKeyAndMode(new URL(args[0]), args[1], args[2], 20);
         } catch (MalformedURLException e) {
             throw new RuntimeException("Invalid server URL", e);
         } // end of catch
     } // end of main
 
     /**
-     * Runs client with given server |url|.
+     * Runs client with given server |url|, AI |key| and |mode|.
      */
-    static void withServerUrl(final URL url) {
+    static void withServerUrlKeyAndMode(final URL url, final String key, final String mode, final int numberOfTurns) {
         System.out.println("Connect to Vindinium server at " + url);
 
         State state = null;
 
+        final HashMap<String,String> initParams = new HashMap<String,String>(1);
+
         for (int t = 0; state == null && t < 3; t++) { // Initial state
             try {
-                state = IO.fromUrl(url, "UTF-8", getState);
+                state = IO.fromPost(initParams, "UTF-8", url, "UTF-8", getState);
             } catch (IOException e) {
-                System.err.println("Fails to get initial state (" + t + 
+                System.err.println("Fails to get initial state (" + t +
                                    "). Will try again.");
                 e.printStackTrace();
             } // end of catch
@@ -70,7 +74,7 @@ public final class Client {
     /**
      * Function getting Vindinium state from I/O reader
      */
-    static final UnaryFunction<BufferedReader,State> getState = 
+    static final UnaryFunction<BufferedReader,State> getState =
         new UnaryFunction<BufferedReader,State>() {
         public State apply(final BufferedReader r) {
             try {
