@@ -55,8 +55,11 @@ public final class Client {
 
         // ---
 
+        System.out.println("Playing at: " + state.playUrl);
+
         final Bot bot = new RandomBot(); // Remplace by other Bot
         final HashMap<String,String> ps = new HashMap<String,String>(1);
+        ps.put("key", key);
 
         while (!state.game.finished) {
             ps.put("dir", bot.nextMove(state).toString());
@@ -65,7 +68,6 @@ public final class Client {
 
             try {
                 state = IO.fromPost(ps, "UTF-8", url, "UTF-8", getState);
-                Thread.sleep(100);
             } catch (Exception e) {
                 System.err.println("Fails to get next state");
                 e.printStackTrace();

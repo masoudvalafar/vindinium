@@ -30,12 +30,14 @@ public final class Json {
      */
     static final TokenReader<Board> boardReader = new TokenReader<Board>() {
         public Board next(final JsonReader r) throws IOException {
+            r.beginObject(); // {
 
             int size = -1;
             String tilesString = null;
 
             for (final ImmutablePair<String,JsonReader> p :
                      objectProperties(r)) {
+
                 if ("size".equals(p.left)) {
                     size = p.right.nextInt();
                 } else {
@@ -43,10 +45,24 @@ public final class Json {
                 }
 
             }
-            //tilesString.split(".{2}")
-            //TODO: construct the tile array from the string
+
+            //Construct the tile array from the string
+            //Split the string each 2 char
+            //(?<=\G...) matches an empty string that has the last match (\G)
+            //followed by three characters (...) before it ((?<= ))
+
+            String[] tilesStringArray = tilesString.split("(?<=\\G..)");
             Tile[][] tiles = new Tile[size][size];
 
+            int x = 0;
+            int y = 0;
+
+            for(int i = 0; i < size; i++) {
+                y = i%size;
+                tiles[x][y] = Tile.of(tilesStringArray[i]);
+            }
+
+            r.endObject(); // }
             return new Board(tiles, size);
         }
     };

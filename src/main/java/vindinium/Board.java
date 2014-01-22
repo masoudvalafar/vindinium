@@ -20,7 +20,7 @@ public final class Board {
     /**
      * Block/tiles
      */
-    public final Tile[/*y*/][/*x*/] tiles;
+    public final Tile[/*x*/][/*y*/] tiles;
 
     // --- Constructors ---
 
