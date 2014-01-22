@@ -67,7 +67,7 @@ public final class Client {
             System.out.print(".");
 
             try {
-                state = IO.fromPost(ps, "UTF-8", url, "UTF-8", getState);
+                state = IO.fromPost(ps, "UTF-8", state.playUrl, "UTF-8", getState);
             } catch (Exception e) {
                 System.err.println("Fails to get next state");
                 e.printStackTrace();
