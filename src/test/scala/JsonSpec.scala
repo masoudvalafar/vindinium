@@ -83,7 +83,7 @@ sealed trait JsonFixtures {
       "spawnPos": { "x": 2, "y": 3 },
       "life": 2,
       "gold": 1,
-      "elo": 1000;
+      "elo": 1000,
       "crashed": true
     }""")
 
@@ -92,7 +92,7 @@ sealed trait JsonFixtures {
     new Hero(2, "Hero #2", Pair(2, 3), Pair(2, 3), 2, 1, 1000, true))
 
   val gameJson = """{
-    "id": 1,
+    "id": "abcd",
     "turn": 2,
     "maxTurns": 10,
     "finished": false,
@@ -101,22 +101,26 @@ sealed trait JsonFixtures {
             "name": "Hero #1",
             "id": 1,
             "pos": { "x": 1, "y": 2 },
+            "spawnPos": { "x": 1, "y": 2 },
             "gold": 0,
             "life": 1,
+            "elo": 1200,
             "crashed": false
         },
         {
             "id": 2,
             "name": "Hero #2",
             "pos": { "x": 2, "y": 3 },
+            "spawnPos": { "x": 2, "y": 3 },
             "life": 2,
             "gold": 1,
+            "elo": 1000,
             "crashed": true
         }
     ],
     "board": {
         "size": 3,
-        "tiles": [ "  ", "##", "[]", "$-", "$1", "@2", "  ", "@1", "  " ]
+        "tiles": "  ##[]$-$1@2  @1  "
     }
   }"""
 

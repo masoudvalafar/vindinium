@@ -56,9 +56,11 @@ public final class Json {
 
             int x = 0;
             int y = 0;
-
-            for(int i = 0; i < size; i++) {
+            for(int i = 0; i < size*size; i++) {
                 y = i%size;
+                if(y == 0 && i != 0) {
+                    x++;
+                }
                 tiles[x][y] = Tile.of(tilesStringArray[i]);
             }
 
