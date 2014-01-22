@@ -50,7 +50,7 @@ sealed trait JsonFixtures {
   import Board.Tile
 
   val boardJson =
-    """{ "size": 3, "tiles": [ "  ", "##", "[]", "$-", "$1", "@2", "  ", "@1", "  " ] }"""
+    """{ "size": 3, "tiles": "  ##[]$-$1@2  @1  "}"""
 
   val tiles = {
     val l = Array.ofDim[Board.Tile](3, 3);
@@ -60,60 +60,68 @@ sealed trait JsonFixtures {
     l
   }
 
-  val board = new Board(tiles)
+  val board = new Board(tiles, 3)
 
   val heroesJson = Seq(
     """{
       "name": "Hero #1",
       "id": 1,
       "pos": { "x": 1, "y": 2 },
+      "spawnPos": { "x": 1, "y": 2 },
       "gold": 0,
       "life": 1,
+      "elo": 1200,
       "crashed": false
     }""",
     """{
       "id": 2,
       "name": "Hero #2",
       "pos": { "x": 2, "y": 3 },
+      "spawnPos": { "x": 2, "y": 3 },
       "life": 2,
       "gold": 1,
+      "elo": 1000,
       "crashed": true
     }""")
 
   val heroes = Seq(
-    new Hero(1, "Hero #1", Pair(1, 2), 1, 0, false),
-    new Hero(2, "Hero #2", Pair(2, 3), 2, 1, true))
+    new Hero(1, "Hero #1", Pair(1, 2), Pair(1, 2), 1, 0, 1200, false),
+    new Hero(2, "Hero #2", Pair(2, 3), Pair(2, 3), 2, 1, 1000, true))
 
   val gameJson = """{
-    "id": 1,
+    "id": "abcd",
     "turn": 2,
     "maxTurns": 10,
     "finished": false,
-    "heroes": [ 
+    "heroes": [
         {
             "name": "Hero #1",
             "id": 1,
             "pos": { "x": 1, "y": 2 },
+            "spawnPos": { "x": 1, "y": 2 },
             "gold": 0,
             "life": 1,
+            "elo": 1200,
             "crashed": false
         },
         {
             "id": 2,
             "name": "Hero #2",
             "pos": { "x": 2, "y": 3 },
+            "spawnPos": { "x": 2, "y": 3 },
             "life": 2,
             "gold": 1,
+            "elo": 1000,
             "crashed": true
         }
     ],
-    "board": { 
-        "size": 3, 
-        "tiles": [ "  ", "##", "[]", "$-", "$1", "@2", "  ", "@1", "  " ] 
+    "board": {
+        "size": 3,
+        "tiles": "  ##[]$-$1@2  @1  "
     }
   }"""
 
-  lazy val game = new Game(1, 2, 10, false, heroes.asJava, board)
+  lazy val game = new Game("abcd", 2, 10, false, heroes.asJava, board)
 
   lazy val stateJson = scala.io.Source.
     fromURL(getClass.getResource("/input1.json")).getLines.mkString

@@ -15,7 +15,7 @@ public final class Game {
     /**
      * Game ID
      */
-    public final int id;
+    public final String id;
 
     /**
      * Count of passed turns
@@ -47,7 +47,7 @@ public final class Game {
     /**
      * Initialize game
      */
-    public Game(final int id, final int turn, final int maxTurns,
+    public Game(final String id, final int turn, final int maxTurns,
                 final boolean finished, final List<Hero> heroes,
                 final Board board) {
 

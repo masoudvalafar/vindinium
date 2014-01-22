@@ -21,14 +21,18 @@ sbt package
 With Maven:
 
 ```
-mvn exec:java -Dexec.arguments='http://server/url'
+mvn exec:java -Dexec.arguments='run training your-key 20 http://localhost:9000'
 ```
 
 With SBT:
 
 ```
-sbt# run http://server/url
+sbt# run training your-key 20 http://localhost:9000
 ```
+
+`20` being the number of games you want to play in a row, `http://localhost:9000` being the server url. `your-key` is the key you had when you registered on the website.
+
+You can replace `training` with `arena`: instead of playing alone against some random bot, you will be connected to the arena mode, waiting for 3 other players to join the game. Of course you can launch 4 instances of the same bot if there is nobody connected for now.
 
 # Test
 

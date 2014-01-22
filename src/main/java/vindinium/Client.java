@@ -21,22 +21,46 @@ public final class Client {
      * @param args args[3] HTTP URL of Vindinium server
      */
     public static void main(final String[] args) {
-        try {
-            withServerUrlKeyAndMode(new URL(args[3]), args[1], args[0], 20);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Invalid server URL", e);
-        } // end of catch
+        final int numberOfGamesToPlay = Integer.parseInt(args[2]);
+
+        //Play numberOfGamesToPlay party in a row
+        for (int i = 0; i < numberOfGamesToPlay; i++) {
+            try {
+                withModeKeyGamesAndServer(args[0], args[1], 20, new URL(args[3]));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Invalid server URL", e);
+            } // end of catch
+        }
     } // end of main
 
     /**
      * Runs client with given server |url|, AI |key| and |mode|.
      */
-    static void withServerUrlKeyAndMode(final URL url, final String key, final String mode, final int numberOfTurns) {
-        System.out.println("Connect to Vindinium server at " + url);
+    static void withModeKeyGamesAndServer(final String mode, final String key, final int numberOfTurns, final URL serverUrl) {
+        System.out.println("Connect to Vindinium server at " + serverUrl);
 
         State state = null;
 
         final HashMap<String,String> initParams = new HashMap<String,String>(1);
+        initParams.put("key", key);
+
+        //Construct api url
+        URL url;
+        try {
+            if("training".equals(mode)) {
+                url = new URL(serverUrl + "/api/training");
+                initParams.put("turns", String.valueOf(numberOfTurns));
+            } else if ("arena".equals(mode)) {
+                url = new URL(serverUrl + "/api/arena");
+                System.out.println("Connecting and waiting for other players to join…");
+            } else {
+                throw new RuntimeException("Invalid mode, should be arena or training.");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Invalid generated URL", e);
+        } // end of catch
+
+
 
         for (int t = 0; state == null && t < 3; t++) { // Initial state
             try {
@@ -54,17 +78,19 @@ public final class Client {
 
         // ---
 
+        System.out.println("Playing at: " + state.viewUrl);
+
         final Bot bot = new RandomBot(); // Remplace by other Bot
         final HashMap<String,String> ps = new HashMap<String,String>(1);
+        ps.put("key", key);
 
         while (!state.game.finished) {
             ps.put("dir", bot.nextMove(state).toString());
 
-            System.out.println("Will POST: " + ps);
+            System.out.print(".");
 
             try {
-                state = IO.fromPost(ps, "UTF-8", url, "UTF-8", getState);
-                Thread.sleep(100);
+                state = IO.fromPost(ps, "UTF-8", state.playUrl, "UTF-8", getState);
             } catch (Exception e) {
                 System.err.println("Fails to get next state");
                 e.printStackTrace();

@@ -30,21 +30,21 @@ public final class IO {
      * @param function Unary function with HTTP reader as argument
      * @throws IOException if fail to POST or read response
      */
-    public static <A> A fromPost(final Map<String,String> ps, 
+    public static <A> A fromPost(final Map<String,String> ps,
                                  final String outEncoding,
                                  final URL url, final String inEncoding,
                                  final UnaryFunction<BufferedReader,A> function)
         throws IOException {
 
-        final UnaryFunction<DataOutputStream,Void> setp = 
-            ((ps == null || ps.isEmpty())) ? null 
+        final UnaryFunction<DataOutputStream,Void> setp =
+            ((ps == null || ps.isEmpty())) ? null
             : parameterAppender(ps, outEncoding);
 
-        return withPostConnection((HttpURLConnection) url.openConnection(), 
+        return withPostConnection((HttpURLConnection) url.openConnection(),
                                   connectionMapper(inEncoding, setp, function));
     } // end of fromPost
 
-    // --- 
+    // ---
 
     /**
      * Applies given |function| on HTTP POST |connection|.
@@ -70,20 +70,20 @@ public final class IO {
         try {
             return function.apply(closeable);
         } finally {
-            try { 
-                closeable.close(); 
+            try {
+                closeable.close();
             } catch (Exception e) { e.printStackTrace(); }
         } // end of finally
     } // end of withReader
-    
+
     /**
      * Returns buffered reader for given stream.
      */
-    static BufferedReader reader(final InputStream in, final String encoding) 
+    static BufferedReader reader(final InputStream in, final String encoding)
         throws IOException {
 
-        final InputStreamReader isr = (encoding == null) 
-            ? new InputStreamReader(in) 
+        final InputStreamReader isr = (encoding == null)
+            ? new InputStreamReader(in)
             : new InputStreamReader(in, encoding);
 
         return new BufferedReader(isr);
@@ -135,18 +135,18 @@ public final class IO {
                     }
 
                     final int c = con.getResponseCode();
-                    
+
                     if (c != 200) {
-                        final String body = 
-                            withCloseable(reader(con.getInputStream(), 
+                        final String body =
+                            withCloseable(reader(con.getErrorStream(),
                                                  encoding), readAsString);
 
-                        throw new IOException("Fails to get response: " + 
-                                              c + " (" + 
+                        throw new IOException("Fails to get response: " +
+                                              c + " (" +
                                               con.getResponseMessage() +
                                               "): " + body);
                     }
-                    
+
                     return withCloseable(reader(con.getInputStream(), encoding), function);
                 } catch (IOException e) {
                     throw new RuntimeException("Fails to POST", e);
