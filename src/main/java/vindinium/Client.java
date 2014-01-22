@@ -52,6 +52,7 @@ public final class Client {
                 initParams.put("turns", String.valueOf(numberOfTurns));
             } else if ("arena".equals(mode)) {
                 url = new URL(serverUrl + "/api/arena");
+                System.out.println("Connecting and waiting for other players to join…");
             } else {
                 throw new RuntimeException("Invalid mode, should be arena or training.");
             }
