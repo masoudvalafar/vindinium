@@ -60,7 +60,7 @@ sealed trait JsonFixtures {
     l
   }
 
-  val board = new Board(tiles)
+  val board = new Board(tiles, 3)
 
   val heroesJson = Seq(
     """{
@@ -89,7 +89,7 @@ sealed trait JsonFixtures {
     "turn": 2,
     "maxTurns": 10,
     "finished": false,
-    "heroes": [ 
+    "heroes": [
         {
             "name": "Hero #1",
             "id": 1,
@@ -107,13 +107,13 @@ sealed trait JsonFixtures {
             "crashed": true
         }
     ],
-    "board": { 
-        "size": 3, 
-        "tiles": [ "  ", "##", "[]", "$-", "$1", "@2", "  ", "@1", "  " ] 
+    "board": {
+        "size": 3,
+        "tiles": [ "  ", "##", "[]", "$-", "$1", "@2", "  ", "@1", "  " ]
     }
   }"""
 
-  lazy val game = new Game(1, 2, 10, false, heroes.asJava, board)
+  lazy val game = new Game("abcd", 2, 10, false, heroes.asJava, board)
 
   lazy val stateJson = scala.io.Source.
     fromURL(getClass.getResource("/input1.json")).getLines.mkString

@@ -22,11 +22,11 @@ object BoardSpec extends org.specs2.mutable.Specification {
 
   "Tiles list" should {
     "not be null" in {
-      new Board(null).aka("constructor") must throwA[IllegalArgumentException]
+      new Board(null, 0).aka("constructor") must throwA[IllegalArgumentException]
     }
 
     "not be empty" in {
-      new Board(Array.ofDim[Board.Tile](0, 0)).
+      new Board(Array.ofDim[Board.Tile](0, 0), 0).
         aka("constructor") must throwA[IllegalArgumentException]
     }
   }

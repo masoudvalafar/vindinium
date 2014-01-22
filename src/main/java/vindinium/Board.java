@@ -28,7 +28,7 @@ public final class Board {
      * Bulk constructor.
      */
     public Board(final Tile[][] tiles, int size) {
-        if (tiles == null || tiles.length == 0) {
+        if (tiles == null || tiles.length == 0 || size == 0) {
             throw new IllegalArgumentException();
         } // end of if
 
