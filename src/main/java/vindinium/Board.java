@@ -27,14 +27,14 @@ public final class Board {
     /**
      * Bulk constructor.
      */
-    public Board(final Tile[][] tiles) {
+    public Board(final Tile[][] tiles, int size) {
         if (tiles == null || tiles.length == 0) {
             throw new IllegalArgumentException();
         } // end of if
 
         // ---
 
-        this.size = tiles[0].length;
+        this.size = size;
         this.tiles = tiles;
     } // end of <init>
 
@@ -84,7 +84,7 @@ public final class Board {
      */
     public static Tile Mine(final int hero) {
         if (hero < 0) throw new IllegalArgumentException();
-            
+
         return new Tile("$"+hero);
     } // end of Mine
 
@@ -96,7 +96,7 @@ public final class Board {
      */
     public static Tile Hero(final int id) {
         if (id < 0) throw new IllegalArgumentException();
-            
+
         return new Tile("@"+id);
     } // end of Hero
 

@@ -22,7 +22,7 @@ public final class Client {
      */
     public static void main(final String[] args) {
         try {
-            withServerUrlKeyAndMode(new URL(args[3]), args[1], args[0], 20);
+            withModeKeyGamesAndServer(args[0], args[1], Integer.parseInt(args[2]), new URL(args[3]));
         } catch (MalformedURLException e) {
             throw new RuntimeException("Invalid server URL", e);
         } // end of catch
@@ -31,12 +31,13 @@ public final class Client {
     /**
      * Runs client with given server |url|, AI |key| and |mode|.
      */
-    static void withServerUrlKeyAndMode(final URL url, final String key, final String mode, final int numberOfTurns) {
+    static void withModeKeyGamesAndServer(final String mode, final String key, final int numberOfTurns, final URL url) {
         System.out.println("Connect to Vindinium server at " + url);
 
         State state = null;
 
         final HashMap<String,String> initParams = new HashMap<String,String>(1);
+        initParams.put("key", key);
 
         for (int t = 0; state == null && t < 3; t++) { // Initial state
             try {

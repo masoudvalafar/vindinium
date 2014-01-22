@@ -23,23 +23,31 @@ import vindinium.Board.Tile;
  */
 public final class Json {
     // --- Shared ---
-    
+
     /**
      * Token reader for board
      * @see Board
      */
     static final TokenReader<Board> boardReader = new TokenReader<Board>() {
         public Board next(final JsonReader r) throws IOException {
-            r.beginObject(); // {
-            
-            final int size = nextInt(r, "size");
-            final Tile[][] tiles = 
-            nextArray(r, "tiles", tilesReader(size), 
-                      ImmutablePair.of(new Tile[size][size], 0)).left;
-            
-            r.endObject(); // }
-            
-            return new Board(tiles);
+
+            int size = -1;
+            String tilesString = null;
+
+            for (final ImmutablePair<String,JsonReader> p :
+                     objectProperties(r)) {
+                if ("size".equals(p.left)) {
+                    size = p.right.nextInt();
+                } else {
+                    tilesString = p.right.nextString();
+                }
+
+            }
+            //tilesString.split(".{2}")
+            //TODO: construct the tile array from the string
+            Tile[][] tiles = new Tile[size][size];
+
+            return new Board(tiles, size);
         }
     };
 
@@ -54,11 +62,15 @@ public final class Json {
             int id = -1;
             String name = null;
             ImmutablePair<Integer,Integer> pos = null;
+            ImmutablePair<Integer,Integer> spawnPos = null;
             int life = 0;
             int gold = 0;
             boolean crashed = false;
-            
-            for (final ImmutablePair<String,JsonReader> p : 
+            String userId = null;
+            int elo = -1;
+            int mineCount = -1;
+
+            for (final ImmutablePair<String,JsonReader> p :
                      objectProperties(r)) {
 
                 if ("id".equals(p.left)) {
@@ -71,8 +83,21 @@ public final class Json {
                     gold = p.right.nextInt();
                 } else if ("crashed".equals(p.left)) {
                     crashed = p.right.nextBoolean();
+                } else if ("userId".equals(p.left)) {
+                    userId = p.right.nextString();
+                } else if ("elo".equals(p.left)) {
+                    elo = p.right.nextInt();
+                } else if ("mineCount".equals(p.left)) {
+                    mineCount = p.right.nextInt();
+                } else if ("spawnPos".equals(p.left)) {
+                    p.right.beginObject(); // {
+
+                    spawnPos = ImmutablePair.
+                        of(nextInt(p.right, "x"), nextInt(p.right, "y"));
+
+                    r.endObject(); // }
                 } else {
-                    assert "position".equals(p.left);
+                    assert "pos".equals(p.left);
                     // Position property as object
 
                     p.right.beginObject(); // {
@@ -83,9 +108,9 @@ public final class Json {
                     r.endObject(); // }
                 } // end of else
             } // end of for
-            
+
             r.endObject(); // }
-            
+
             return new Hero(id, name, pos, life, gold, crashed);
         }
     };
@@ -98,18 +123,17 @@ public final class Json {
         public Game next(final JsonReader r) throws IOException {
             r.beginObject(); // {
 
-            int id = -1;
+            String id = null;
             int turn = 0;
             int maxTurn = 0;
             boolean finished = false;
             List<Hero> heroes = null;
             Board board = null;
-            
-            for (final ImmutablePair<String,JsonReader> p : 
+
+            for (final ImmutablePair<String,JsonReader> p :
                      objectProperties(r)) {
-                
                 if ("id".equals(p.left)) {
-                    id = p.right.nextInt();
+                    id = p.right.nextString();
                 } else if ("turn".equals(p.left)) {
                     turn = p.right.nextInt();
                 } else if ("maxTurns".equals(p.left)) {
@@ -146,16 +170,16 @@ public final class Json {
             String tok = null;
             URL vurl = null;
             URL purl = null;
-            
-            for (final ImmutablePair<String,JsonReader> p : 
+
+            for (final ImmutablePair<String,JsonReader> p :
                      objectProperties(r)) {
 
                 if ("game".equals(p.left)) {
                     game = gameReader.next(p.right);
                 } else if ("hero".equals(p.left)) {
                     p.right.beginObject(); // {
-                    
-                    for (final ImmutablePair<String,JsonReader> hp : 
+
+                    for (final ImmutablePair<String,JsonReader> hp :
                              objectProperties(p.right)) {
 
                         if ("id".equals(hp.left)) {
@@ -176,7 +200,7 @@ public final class Json {
                     } // end of catch
                 } else {
                     assert "playUrl".equals(p.left);
-                    
+
                     try {
                         purl = new URL(p.right.nextString());
                     } catch (Exception e) {
@@ -199,14 +223,14 @@ public final class Json {
      */
     static final ArrayReader<ImmutablePair<Tile[][],Integer>> tilesReader(final int size) {
         final double s = size;
-        
+
         return new ArrayReader<ImmutablePair<Tile[][],Integer>>() {
             public ImmutablePair<Tile[][],Integer> next(final JsonReader r, ImmutablePair<Tile[][],Integer> p) throws IOException {
 
                 final Tile[][] tiles = p.left;
                 final int i = p.right;
                 final String repr = r.nextString();
-                
+
                 if (repr == null) {
                     throw new IOException("Null tile");
                 } // end of if
@@ -214,7 +238,7 @@ public final class Json {
                 final double dd = i / s;
                 final int x;
                 final int y;
-                
+
                 if (dd < 1) {
                     y = 0;
                     x = i;
@@ -240,7 +264,7 @@ public final class Json {
      */
     public static <T> ArrayReader<List<T>> arrayListReader(final TokenReader<T> tr) {
         return new ArrayReader<List<T>>() {
-            public List<T> next(final JsonReader r, List<T> list) 
+            public List<T> next(final JsonReader r, List<T> list)
                 throws IOException {
 
                 list.add(tr.next(r));
@@ -250,14 +274,14 @@ public final class Json {
         };
     } // end of arrayListReader
 
-    // --- 
+    // ---
 
     /**
      * Reads next tokens as T.
      * @throws IOException if fails to read tokens as T
      * @see #next(com.google.gson.stream.JsonReader,TokenReader)
      */
-    public static <T> T next(final Reader r, final TokenReader<T> tr) 
+    public static <T> T next(final Reader r, final TokenReader<T> tr)
         throws IOException {
 
         return next(new JsonReader(r), tr);
@@ -267,7 +291,7 @@ public final class Json {
      * Reads next tokens as T.
      * @throws IOException if fails to read tokens as T
      */
-    public static <T> T next(final JsonReader r, final TokenReader<T> tr) 
+    public static <T> T next(final JsonReader r, final TokenReader<T> tr)
         throws IOException {
 
         return tr.next(r);
@@ -278,7 +302,7 @@ public final class Json {
      * @throws IOException if fails to read array of T property
      */
     public static <T> T nextArray(final JsonReader r, final String property,
-                                  final ArrayReader<T> ar, final T initial) 
+                                  final ArrayReader<T> ar, final T initial)
         throws IOException {
 
         return nextArray(propertyReader(r, property), ar, initial);
@@ -288,15 +312,15 @@ public final class Json {
      * Reads next token as array of T.
      * @throws IOException if fails to read array of T property
      */
-    public static <T> T nextArray(final JsonReader r, 
-                                  final ArrayReader<T> ar, 
-                                  final T initial) 
+    public static <T> T nextArray(final JsonReader r,
+                                  final ArrayReader<T> ar,
+                                  final T initial)
         throws IOException {
 
         r.beginArray(); // [
 
         T cur = initial;
-        
+
         while (r.hasNext() && !JsonToken.END_ARRAY.equals(r.peek())) {
             cur = ar.next(r, cur);
         } // end of while
@@ -310,7 +334,7 @@ public final class Json {
      * Reads next token as integer |property|.
      * @throws IOException if fails to read int property
      */
-    public static int nextInt(final JsonReader r, final String property) 
+    public static int nextInt(final JsonReader r, final String property)
         throws IOException {
 
         return propertyReader(r, property).nextInt();
@@ -320,14 +344,14 @@ public final class Json {
      * Returns JSON reader for |property|.
      * @throws IOException if property doesn't match
      */
-    public static JsonReader propertyReader(final JsonReader r, 
-                                            final String property) 
+    public static JsonReader propertyReader(final JsonReader r,
+                                            final String property)
         throws IOException {
 
         final String name = r.nextName();
 
         if (property == null || !property.equals(name)) {
-            throw new IOException("Unexpected property: " + 
+            throw new IOException("Unexpected property: " +
                                   name + " != " + property);
 
         } // end of if
@@ -340,12 +364,12 @@ public final class Json {
     public static Iterable<ImmutablePair<String,JsonReader>> objectProperties(final JsonReader r) throws IOException {
 
         final ObjPropIterator iter = new ObjPropIterator(r);
-            
+
         return new Iterable<ImmutablePair<String,JsonReader>>() {
             public ObjPropIterator iterator() { return iter; }
         };
     } // end of objectProperties
-    
+
     // --- Inner classes ---
 
     /**
@@ -370,7 +394,7 @@ public final class Json {
     /**
      * Object property iterator.
      */
-    private static final class ObjPropIterator 
+    private static final class ObjPropIterator
         implements Iterator<ImmutablePair<String,JsonReader>> {
 
         private final JsonReader r;
@@ -396,7 +420,7 @@ public final class Json {
         /**
          * Returns name and reader for next object property.
          */
-        public ImmutablePair<String,JsonReader> next() 
+        public ImmutablePair<String,JsonReader> next()
             throws NoSuchElementException {
 
             try {
