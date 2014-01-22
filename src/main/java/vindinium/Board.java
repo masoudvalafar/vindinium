@@ -27,14 +27,14 @@ public final class Board {
     /**
      * Bulk constructor.
      */
-    public Board(final Tile[][] tiles, int size) {
-        if (tiles == null || tiles.length == 0 || size == 0) {
+    public Board(final Tile[][] tiles) {
+        if (tiles == null || tiles.length == 0) {
             throw new IllegalArgumentException();
         } // end of if
 
         // ---
 
-        this.size = size;
+        this.size = tiles[0].length;
         this.tiles = tiles;
     } // end of <init>
 

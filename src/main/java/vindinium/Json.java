@@ -65,7 +65,7 @@ public final class Json {
             }
 
             r.endObject(); // }
-            return new Board(tiles, size);
+            return new Board(tiles);
         }
     };
 

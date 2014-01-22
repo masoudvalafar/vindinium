@@ -60,7 +60,7 @@ sealed trait JsonFixtures {
     l
   }
 
-  val board = new Board(tiles, 3)
+  val board = new Board(tiles)
 
   val heroesJson = Seq(
     """{
