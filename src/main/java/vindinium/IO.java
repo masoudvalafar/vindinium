@@ -135,18 +135,18 @@ public final class IO {
                     }
 
                     final int c = con.getResponseCode();
-                    
+
                     if (c != 200) {
-                        final String body = 
-                            withCloseable(reader(con.getInputStream(), 
+                        final String body =
+                            withCloseable(reader(con.getErrorStream(),
                                                  encoding), readAsString);
 
-                        throw new IOException("Fails to get response: " + 
-                                              c + " (" + 
+                        throw new IOException("Fails to get response: " +
+                                              c + " (" +
                                               con.getResponseMessage() +
                                               "): " + body);
                     }
-                    
+
                     return withCloseable(reader(con.getInputStream(), encoding), function);
                 } catch (IOException e) {
                     throw new RuntimeException("Fails to POST", e);
