@@ -62,7 +62,7 @@ public final class State {
      * @see Game#heroes
      */
     public Hero hero() {
-        return game.heroes.get(heroId);
+        return game.heroes.get(heroId-1);
     } // end of hero
 
     // --- Object support ---
@@ -76,7 +76,7 @@ public final class State {
         } // end of if
 
         final State other = (State) o;
-        
+
         return new EqualsBuilder().
             append(this.game, other.game).
             append(this.heroId, other.heroId).
