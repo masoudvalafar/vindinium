@@ -55,7 +55,7 @@ public final class Client {
 
         // ---
 
-        System.out.println("Playing at: " + state.playUrl);
+        System.out.println("Playing at: " + state.viewUrl);
 
         final Bot bot = new RandomBot(); // Remplace by other Bot
         final HashMap<String,String> ps = new HashMap<String,String>(1);
@@ -64,7 +64,7 @@ public final class Client {
         while (!state.game.finished) {
             ps.put("dir", bot.nextMove(state).toString());
 
-            System.out.println("Will POST: " + ps);
+            System.out.print(".");
 
             try {
                 state = IO.fromPost(ps, "UTF-8", url, "UTF-8", getState);
