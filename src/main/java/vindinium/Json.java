@@ -127,7 +127,7 @@ public final class Json {
 
             r.endObject(); // }
 
-            return new Hero(id, name, pos, life, gold, crashed);
+            return new Hero(id, name, pos, spawnPos, life, gold, elo, crashed);
         }
     };
 

@@ -28,6 +28,11 @@ public final class Hero {
     public ImmutablePair<Integer,Integer> position;
 
     /**
+     * SpawnPosition/x,y coordinates
+     */
+    public ImmutablePair<Integer,Integer> spawnPosition;
+
+    /**
      * Life count
      */
     public int life;
@@ -36,6 +41,11 @@ public final class Hero {
      * Gold amount
      */
     public int gold;
+
+    /**
+     * Elo score
+     */
+    public int elo;
 
     /**
      * Is crashed?
@@ -49,13 +59,16 @@ public final class Hero {
      */
     public Hero(final int id, final String name,
                 final ImmutablePair<Integer,Integer> position,
-                final int life, final int gold, final boolean crashed) {
+                final ImmutablePair<Integer,Integer> spawnPosition,
+                final int life, final int gold, final int elo, final boolean crashed) {
 
         this.id = id;
         this.name = name;
         this.position = position;
+        this.spawnPosition = spawnPosition;
         this.life = life;
         this.gold = gold;
+        this.elo = elo;
         this.crashed = crashed;
     } // end of <init>
 
@@ -75,8 +88,10 @@ public final class Hero {
             append(this.id, other.id).
             append(this.name, other.name).
             append(this.position, other.position).
+            append(this.spawnPosition, other.spawnPosition).
             append(this.life, other.life).
             append(this.gold, other.gold).
+            append(this.elo, other.elo).
             append(this.crashed, other.crashed).
             isEquals();
 
@@ -88,7 +103,8 @@ public final class Hero {
     public int hashCode() {
         return new HashCodeBuilder(1, 5).
             append(this.id).append(this.name).append(this.position).
-            append(this.life).append(this.gold).append(this.crashed).
+            append(this.spawnPosition).append(this.life).append(this.gold).
+            append(this.elo).append(this.crashed).
             toHashCode();
 
     } // end of hashCode
@@ -101,8 +117,10 @@ public final class Hero {
             append("id", this.id).
             append("name", this.name).
             append("position", this.position).
+            append("spawnPosition", this.spawnPosition).
             append("life", this.life).
             append("gold", this.gold).
+            append("elo", this.elo).
             append("crashed", this.crashed).
             toString();
 
