@@ -62,9 +62,6 @@ sealed trait JsonFixtures {
 
   val board = new Board(tiles, 3)
 
-  /**
-{u'viewUrl': u'http://localhost:9000/jxn9mmbr', u'game': {u'turn': 0, u'finished': False, u'board': {u'tiles': u'      ##                ##                ##        ##          ####  ##      ####      ##  ####                                        []    ####    []        @1      $-            $-      @4  ######                ######      ##                    ##        ##                    ##      ######                ######  @2      $-            $-      @3        []    ####    []                                        ####  ##      ####      ##  ####          ##        ##                ##                ##      ', u'size': 16}, u'heroes': [{u'life': 100, u'elo': 1200, u'gold': 0, u'userId': u'j07ws669', u'pos': {u'y': 0, u'x': 5}, u'spawnPos': {u'y': 0, u'x': 5}, u'crashed': False, u'mineCount': 0, u'id': 1, u'name': u'vjousse'}, {u'life': 100, u'name': u'random', u'gold': 0, u'pos': {u'y': 0, u'x': 10}, u'spawnPos': {u'y': 0, u'x': 10}, u'crashed': False, u'mineCount': 0, u'id': 2}, {u'life': 100, u'name': u'random', u'gold': 0, u'pos': {u'y': 15, u'x': 10}, u'spawnPos': {u'y': 15, u'x': 10}, u'crashed': False, u'mineCount': 0, u'id': 3}, {u'life': 100, u'name': u'random', u'gold': 0, u'pos': {u'y': 15, u'x': 5}, u'spawnPos': {u'y': 15, u'x': 5}, u'crashed': False, u'mineCount': 0, u'id': 4}], u'id': u'jxn9mmbr', u'maxTurns': 40}, u'hero': {u'life': 100, u'elo': 1200, u'gold': 0, u'userId': u'j07ws669', u'pos': {u'y': 0, u'x': 5}, u'spawnPos': {u'y': 0, u'x': 5}, u'crashed': False, u'mineCount': 0, u'id': 1, u'name': u'vjousse'}, u'token': u'1vqv', u'playUrl': u'http://localhost:9000/api/jxn9mmbr/1vqv/play'}
-  **/
   val heroesJson = Seq(
     """{
       "name": "Hero #1",
