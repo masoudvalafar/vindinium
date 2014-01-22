@@ -43,24 +43,22 @@ public final class Json {
                 } else {
                     tilesString = p.right.nextString();
                 }
-
             }
 
-            //Construct the tile array from the string
-            //Split the string each 2 char
-            //(?<=\G...) matches an empty string that has the last match (\G)
-            //followed by three characters (...) before it ((?<= ))
-
-            String[] tilesStringArray = tilesString.split("(?<=\\G..)");
-            Tile[][] tiles = new Tile[size][size];
+            /*
+            Construct the tile array from the string
+            Split the string each 2 char
+            (?<=\G...) matches an empty string that has the last match (\G)
+            followed by three characters (...) before it ((?<= ))
+            */
+            final String[] tilesStringArray = tilesString.split("(?<=\\G..)");
+            final Tile[][] tiles = new Tile[size][size];
 
             int x = 0;
             int y = 0;
-            for(int i = 0; i < size*size; i++) {
-                y = i%size;
-                if(y == 0 && i != 0) {
-                    x++;
-                }
+            for (int i = 0; i < size*size; i++) {
+                y = i % size;
+                if (y == 0 && i != 0) x++;
                 tiles[x][y] = Tile.of(tilesStringArray[i]);
             }
 

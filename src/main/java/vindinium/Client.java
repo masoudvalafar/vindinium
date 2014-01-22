@@ -23,7 +23,7 @@ public final class Client {
     public static void main(final String[] args) {
         final int numberOfGamesToPlay = Integer.parseInt(args[2]);
 
-        //Play numberOfGamesToPlay party in a row
+        // Play numberOfGamesToPlay party in a row
         for (int i = 0; i < numberOfGamesToPlay; i++) {
             try {
                 withModeKeyGamesAndServer(args[0], args[1], 20, new URL(args[3]));
@@ -44,15 +44,15 @@ public final class Client {
         final HashMap<String,String> initParams = new HashMap<String,String>(1);
         initParams.put("key", key);
 
-        //Construct api url
+        // Construct api url
         URL url;
         try {
-            if("training".equals(mode)) {
+            if ("training".equals(mode)) {
                 url = new URL(serverUrl + "/api/training");
                 initParams.put("turns", String.valueOf(numberOfTurns));
             } else if ("arena".equals(mode)) {
                 url = new URL(serverUrl + "/api/arena");
-                System.out.println("Connecting and waiting for other players to join…");
+                System.out.println("Connecting and waiting for other players to join ...");
             } else {
                 throw new RuntimeException("Invalid mode, should be arena or training.");
             }
@@ -60,11 +60,11 @@ public final class Client {
             throw new RuntimeException("Invalid generated URL", e);
         } // end of catch
 
-
-
         for (int t = 0; state == null && t < 3; t++) { // Initial state
             try {
-                state = IO.fromPost(initParams, "UTF-8", url, "UTF-8", getState);
+                state = IO.
+                    fromPost(initParams, "UTF-8", url, "UTF-8", getState);
+
             } catch (IOException e) {
                 System.err.println("Fails to get initial state (" + t +
                                    "). Will try again.");
@@ -90,7 +90,9 @@ public final class Client {
             System.out.print(".");
 
             try {
-                state = IO.fromPost(ps, "UTF-8", state.playUrl, "UTF-8", getState);
+                state = IO.
+                    fromPost(ps, "UTF-8", state.playUrl, "UTF-8", getState);
+
             } catch (Exception e) {
                 System.err.println("Fails to get next state");
                 e.printStackTrace();
