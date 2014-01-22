@@ -21,23 +21,45 @@ public final class Client {
      * @param args args[3] HTTP URL of Vindinium server
      */
     public static void main(final String[] args) {
-        try {
-            withModeKeyGamesAndServer(args[0], args[1], Integer.parseInt(args[2]), new URL(args[3]));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Invalid server URL", e);
-        } // end of catch
+        final int numberOfGamesToPlay = Integer.parseInt(args[2]);
+
+        //Play numberOfGamesToPlay party in a row
+        for (int i = 0; i < numberOfGamesToPlay; i++) {
+            try {
+                withModeKeyGamesAndServer(args[0], args[1], 20, new URL(args[3]));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Invalid server URL", e);
+            } // end of catch
+        }
     } // end of main
 
     /**
      * Runs client with given server |url|, AI |key| and |mode|.
      */
-    static void withModeKeyGamesAndServer(final String mode, final String key, final int numberOfTurns, final URL url) {
-        System.out.println("Connect to Vindinium server at " + url);
+    static void withModeKeyGamesAndServer(final String mode, final String key, final int numberOfTurns, final URL serverUrl) {
+        System.out.println("Connect to Vindinium server at " + serverUrl);
 
         State state = null;
 
         final HashMap<String,String> initParams = new HashMap<String,String>(1);
         initParams.put("key", key);
+
+        //Construct api url
+        URL url;
+        try {
+            if("training".equals(mode)) {
+                url = new URL(serverUrl + "/api/training");
+                initParams.put("turns", String.valueOf(numberOfTurns));
+            } else if ("arena".equals(mode)) {
+                url = new URL(serverUrl + "/api/arena");
+            } else {
+                throw new RuntimeException("Invalid mode, should be arena or training.");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Invalid generated URL", e);
+        } // end of catch
+
+
 
         for (int t = 0; state == null && t < 3; t++) { // Initial state
             try {
