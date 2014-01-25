@@ -1,5 +1,6 @@
 package vindinium;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,15 @@ public final class RandomBot implements Bot {
     /**
      * 'Free' tiles
      */
-    static final List<Tile> freeTiles = java.util.Arrays.asList(new Tile[] { 
-            Tile.AIR, Tile.FREE_MINE, Tile.TAVERN, Tile.WALL
-        });
+    static final List<Tile> freeTiles;
+
+    static {
+        final ArrayList<Tile> ts = new ArrayList<Tile>(3);
+        ts.add(Tile.AIR);
+        ts.add(Tile.FREE_MINE);
+        ts.add(Tile.TAVERN);
+        freeTiles = Collections.unmodifiableList(ts);
+    }
 
     /**
      * {@inheritDoc}
