@@ -49,7 +49,7 @@ public final class Json {
             Construct the tile array from the string
             Split the string each 2 char
             (?<=\G...) matches an empty string that has the last match (\G)
-            followed by three characters (...) before it ((?<= ))
+            followed by two characters (..) before it ((?<= ))
             */
             final String[] tilesStringArray = tilesString.split("(?<=\\G..)");
             final Tile[][] tiles = new Tile[size][size];

@@ -30,6 +30,7 @@ public final class Client {
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Invalid server URL", e);
             } // end of catch
+            System.out.println("\nGame finished: " + (i+1) + "/" + numberOfGamesToPlay);
         }
     } // end of main
 
@@ -37,7 +38,7 @@ public final class Client {
      * Runs client with given server |url|, AI |key| and |mode|.
      */
     static void withModeKeyGamesAndServer(final String mode, final String key, final int numberOfTurns, final URL serverUrl) {
-        System.out.println("Connect to Vindinium server at " + serverUrl);
+        System.out.println("\nConnecting to Vindinium server at " + serverUrl);
 
         State state = null;
 
@@ -84,7 +85,9 @@ public final class Client {
         final HashMap<String,String> ps = new HashMap<String,String>(1);
         ps.put("key", key);
 
-        while (!state.game.finished) {
+        boolean finished = state.game.finished;
+
+        while (!finished) {
             ps.put("dir", bot.nextMove(state).toString());
 
             System.out.print(".");
@@ -93,9 +96,11 @@ public final class Client {
                 state = IO.
                     fromPost(ps, "UTF-8", state.playUrl, "UTF-8", getState);
 
+                finished = state.game.finished;
             } catch (Exception e) {
                 System.err.println("Fails to get next state");
                 e.printStackTrace();
+                finished = true;
             } // end of catch
         } // end of while
     } // end of withServerUrl
