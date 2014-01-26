@@ -21,18 +21,20 @@ sbt package
 With Maven:
 
 ```
-mvn exec:java -Dexec.arguments='run training your-key 20 http://localhost:9000'
+mvn exec:java -Dexec.arguments='run training your-key 20 http://vindinium.org'
 ```
 
 With SBT:
 
 ```
-sbt# run training your-key 20 http://localhost:9000
+sbt# run training your-key 20 http://vindinium.org
 ```
 
-`20` being the number of games you want to play in a row, `http://localhost:9000` being the server url. `your-key` is the key you had when you registered on the website.
+`20` being the number of turns you want to play in the game, `http://vindinium.org` being the server url. `your-key` is the key you had when you registered on the website.
 
-You can replace `training` with `arena`: instead of playing alone against some random bot, you will be connected to the arena mode, waiting for 3 other players to join the game. Of course you can launch 4 instances of the same bot if there is nobody connected for now.
+You can replace `training` with `arena`: instead of playing alone against some random bot, you will be connected to the arena mode, waiting for 3 other players to join the game. 
+In `arena` mode, the number argument is the number of games to play in a row. All arena games last 300 moves.
+Of course you can launch 4 instances of the same bot if there is nobody connected for now.
 
 # Test
 
