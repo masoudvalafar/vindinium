@@ -43,19 +43,19 @@ public final class RandomBot implements Bot {
 
         // ---
 
-        if (y > 0 && freeTiles.contains(state.game.board.tiles[x][y-1])) {
+        if (y > 0 && freeTiles.contains(state.game.board.tiles[y-1][x])) {
             around.add(Direction.NORTH);
         } // end of if
 
-        if (y < last && freeTiles.contains(state.game.board.tiles[x][y+1])) {
+        if (y < last && freeTiles.contains(state.game.board.tiles[y+1][x])) {
             around.add(Direction.SOUTH);
         } // end of if
 
-        if (x > 0 && freeTiles.contains(state.game.board.tiles[x-1][y])) {
+        if (x > 0 && freeTiles.contains(state.game.board.tiles[y][x-1])) {
             around.add(Direction.WEST);
         } // end of if
 
-        if (x < last && freeTiles.contains(state.game.board.tiles[x+1][y])) {
+        if (x < last && freeTiles.contains(state.game.board.tiles[y][x+1])) {
             around.add(Direction.EAST);
         } // end of if
 
