@@ -13,7 +13,10 @@ public class AIBot implements Bot {
 	@Override
 	public Direction nextMove(State state) {
 
-		Map<Direction, Integer> directionScores = scoreManager.getScores(state.game.board, state.hero().id,
+		BoardManager bm = BoardManager.getInstance();
+		bm.setBoard(state.game.board);
+		
+		Map<Direction, Integer> directionScores = scoreManager.getScores(state.game.board, state.hero(),
 				state.hero().position);
 
 		// returning the best direction

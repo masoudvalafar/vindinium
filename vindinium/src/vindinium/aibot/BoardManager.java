@@ -13,6 +13,11 @@ import vindinium.Board.Tile;
 public class BoardManager {
 
 	static BoardManager instance = null;
+	private Board board;
+	private ArrayList<ImmutablePair<Integer, Integer>> pubs = null;
+
+	private BoardManager() {
+	}
 
 	public static BoardManager getInstance() {
 		if (instance == null) {
@@ -22,8 +27,7 @@ public class BoardManager {
 		return instance;
 	}
 
-	public int findShortestPath(Board board, ImmutablePair<Integer, Integer> source,
-			ImmutablePair<Integer, Integer> destination) {
+	public int findShortestPath(ImmutablePair<Integer, Integer> source, ImmutablePair<Integer, Integer> destination) {
 
 		Set<ImmutablePair<Integer, Integer>> visited = new HashSet<ImmutablePair<Integer, Integer>>();
 		List<ImmutablePair<Integer, Integer>> exploreList = new ArrayList<ImmutablePair<Integer, Integer>>();
@@ -111,12 +115,41 @@ public class BoardManager {
 		return true;
 	}
 
-	public boolean isEmpty(Board board, int i, int j) {
+	public boolean isEmpty(int i, int j) {
 		return isEmpty(board.tiles[i][j]);
 	}
 
 	public boolean isTarget(ImmutablePair<Integer, Integer> p1, ImmutablePair<Integer, Integer> p2) {
 		return p1.equals(p2);
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	public ArrayList<ImmutablePair<Integer, Integer>> getTargetPubs() {
+
+		if (pubs == null) {
+			pubs = new ArrayList<>();
+			for (int i = 0; i < board.size; i++) {
+				for (int j = 0; j < board.size; j++) {
+					if (isPub(board.tiles[i][j])) {
+						pubs.add(new ImmutablePair<Integer, Integer>(i, j));
+					}
+
+				}
+			}
+		}
+
+		return pubs;
+	}
+
+	private boolean isPub(Tile tile) {
+		if (tile.toString().equals("[]")) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
