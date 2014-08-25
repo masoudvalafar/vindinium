@@ -24,6 +24,8 @@ public class AIBot implements Bot {
 		int bestScore = Integer.MIN_VALUE;
 
 		for (Direction d : Direction.values()) {
+			if (d == Direction.STAY) continue;
+			
 			if (bestScore < directionScores.get(d)) {
 				direction = d;
 				bestScore = directionScores.get(d);

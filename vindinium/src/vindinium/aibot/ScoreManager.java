@@ -14,6 +14,8 @@ import vindinium.Hero;
 
 public class ScoreManager {
 
+	static BoardManager bm = BoardManager.getInstance();
+
 	List<ImmutablePair<Integer, Integer>> mines = null;
 
 	/**
@@ -25,12 +27,11 @@ public class ScoreManager {
 	 * @return
 	 */
 	public Map<Direction, Integer> getScores(Board board, Hero hero, ImmutablePair<Integer, Integer> position) {
-		int MAX_DISTANCE = board.size * board.size;
 
 		int id = hero.id;
 		int hp = hero.life;
 		System.out.println("hp:" + hp);
-		
+
 		// updating list of target mines
 		List<ImmutablePair<Integer, Integer>> targetMines = getTargetableMines(board, id);
 
@@ -39,33 +40,28 @@ public class ScoreManager {
 
 		// finding distance from each neighbor to target mine
 		Map<Direction, Integer> distanceFromTargetMine = getDistance(board, position, targetMine);
-		
-		
+
 		// find closest pub
-		ImmutablePair<Integer, Integer> pub = findClosestPub(targetMines, position);
-		
+		ImmutablePair<Integer, Integer> pub = findClosestPub(position);
+
 		// finding distance from pub
-		System.out.println("position:" + position + " , pub: " + pub);
 		Map<Direction, Integer> distanceFromTargetPub = getDistance(board, position, pub);
-		System.out.println("distance from pub:" + distanceFromTargetPub);
-		
+
 		// calculating best direction score
 		Map<Direction, Integer> directionScores = new HashMap<Direction, Integer>();
 		for (Direction d : Direction.values()) {
-			int mineFactor = board.size - distanceFromTargetMine.get(d);
-			int pubFactor = (100 - hp) / 10 * (board.size - distanceFromTargetPub.get(d));
-			System.out.println(String.format("score: %d - mine: %d, pub: %d", mineFactor + pubFactor, mineFactor, pubFactor ) + " - direction: " + d);
-			directionScores.put(d, mineFactor + pubFactor );
+			int mineFactor = bm.getMaxDistance() - distanceFromTargetMine.get(d);
+			int pubFactor = bm.getMaxDistance() - distanceFromTargetPub.get(d);
+			System.out.println(String.format("score: %d - mine: %d, pub: %d", mineFactor + pubFactor, mineFactor,
+					pubFactor) + " - direction: " + d);
+			directionScores.put(d, hp > 50 ? mineFactor : pubFactor);
 		}
 
 		return directionScores;
 	}
 
-	private ImmutablePair<Integer, Integer> findClosestPub(List<ImmutablePair<Integer, Integer>> targetMines,
-			ImmutablePair<Integer, Integer> position) {
-		
-		BoardManager bm = BoardManager.getInstance();
-		
+	private ImmutablePair<Integer, Integer> findClosestPub(ImmutablePair<Integer, Integer> position) {
+
 		int shortestPathLength = Integer.MAX_VALUE;
 		ImmutablePair<Integer, Integer> targetPub = null;
 		for (ImmutablePair<Integer, Integer> pub : bm.getTargetPubs()) {
@@ -79,16 +75,15 @@ public class ScoreManager {
 		return targetPub;
 	}
 
-	private Map<Direction, Integer> getDistance(Board board, ImmutablePair<Integer, Integer> position, ImmutablePair<Integer, Integer> targetMine) {
-		int MAX_DISTANCE = board.size * board.size;
-		BoardManager bm = BoardManager.getInstance();
+	private Map<Direction, Integer> getDistance(Board board, ImmutablePair<Integer, Integer> position,
+			ImmutablePair<Integer, Integer> targetMine) {
 		Map<Direction, Integer> distance = new HashMap<Direction, Integer>();
 		ImmutablePair<Integer, Integer> neighbor = new ImmutablePair<Integer, Integer>(position.left,
 				position.right - 1);
 		if (position.right > 0 && (bm.isEmpty(position.left, position.right - 1) || bm.isTarget(neighbor, targetMine))) {
 			distance.put(Direction.WEST, bm.findShortestPath(neighbor, targetMine));
 		} else {
-			distance.put(Direction.WEST, MAX_DISTANCE);
+			distance.put(Direction.WEST, bm.getMaxDistance());
 		}
 
 		neighbor = new ImmutablePair<Integer, Integer>(position.left, position.right + 1);
@@ -96,14 +91,14 @@ public class ScoreManager {
 				|| bm.isTarget(neighbor, targetMine)) {
 			distance.put(Direction.EAST, bm.findShortestPath(neighbor, targetMine));
 		} else {
-			distance.put(Direction.EAST, MAX_DISTANCE);
+			distance.put(Direction.EAST, bm.getMaxDistance());
 		}
 
 		neighbor = new ImmutablePair<Integer, Integer>(position.left - 1, position.right);
 		if (position.left > 0 && bm.isEmpty(position.left - 1, position.right) || bm.isTarget(neighbor, targetMine)) {
 			distance.put(Direction.NORTH, bm.findShortestPath(neighbor, targetMine));
 		} else {
-			distance.put(Direction.NORTH, MAX_DISTANCE);
+			distance.put(Direction.NORTH, bm.getMaxDistance());
 		}
 
 		neighbor = new ImmutablePair<Integer, Integer>(position.left + 1, position.right);
@@ -111,15 +106,15 @@ public class ScoreManager {
 				|| bm.isTarget(neighbor, targetMine)) {
 			distance.put(Direction.SOUTH, bm.findShortestPath(neighbor, targetMine));
 		} else {
-			distance.put(Direction.SOUTH, MAX_DISTANCE);
+			distance.put(Direction.SOUTH, bm.getMaxDistance());
 		}
 
 		distance.put(Direction.STAY,
 				bm.findShortestPath(new ImmutablePair<Integer, Integer>(position.left, position.right), targetMine));
 
-//		System.out.println("target mine:" + targetMine);
-//		System.out.println("position:" + position);
-//		System.out.println("distance:" + distance);
+		// System.out.println("target mine:" + targetMine);
+		// System.out.println("position:" + position);
+		// System.out.println("distance:" + distance);
 		return distance;
 	}
 

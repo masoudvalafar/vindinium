@@ -46,7 +46,7 @@ public class BoardManager {
 
 				if (toExplore.right > 0) {
 					if (isGoal(destination, toExplore.left, toExplore.right - 1)
-							|| isEmpty(board.tiles[toExplore.left][toExplore.right - 1])) {
+							|| isEmpty(toExplore.left, toExplore.right - 1)) {
 						ImmutablePair<Integer, Integer> neighborTile = new ImmutablePair<Integer, Integer>(
 								toExplore.left, toExplore.right - 1);
 						if (!visited.contains(neighborTile)) {
@@ -57,7 +57,7 @@ public class BoardManager {
 
 				if (toExplore.right < board.size - 1) {
 					if (isGoal(destination, toExplore.left, toExplore.right + 1)
-							|| isEmpty(board.tiles[toExplore.left][toExplore.right + 1])) {
+							|| isEmpty(toExplore.left, toExplore.right + 1)) {
 						ImmutablePair<Integer, Integer> neighborTile = new ImmutablePair<Integer, Integer>(
 								toExplore.left, toExplore.right + 1);
 						if (!visited.contains(neighborTile)) {
@@ -68,7 +68,7 @@ public class BoardManager {
 
 				if (toExplore.left > 0) {
 					if (isGoal(destination, toExplore.left - 1, toExplore.right)
-							|| isEmpty(board.tiles[toExplore.left - 1][toExplore.right])) {
+							|| isEmpty(toExplore.left - 1, toExplore.right)) {
 						ImmutablePair<Integer, Integer> neighborTile = new ImmutablePair<Integer, Integer>(
 								toExplore.left - 1, toExplore.right);
 						if (!visited.contains(neighborTile)) {
@@ -79,7 +79,7 @@ public class BoardManager {
 
 				if (toExplore.left < board.size - 1) {
 					if (isGoal(destination, toExplore.left + 1, toExplore.right)
-							|| isEmpty(board.tiles[toExplore.left + 1][toExplore.right])) {
+							|| isEmpty(toExplore.left + 1, toExplore.right)) {
 						ImmutablePair<Integer, Integer> neighborTile = new ImmutablePair<Integer, Integer>(
 								toExplore.left + 1, toExplore.right);
 						if (!visited.contains(neighborTile)) {
@@ -150,6 +150,10 @@ public class BoardManager {
 		}
 
 		return false;
+	}
+
+	public int getMaxDistance() {
+		return board.size * 2;
 	}
 
 }
